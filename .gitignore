@@ -1,0 +1,7 @@
+node/app
+node/dist
+node/node_modules
+scala/project/project
+scala/project/target
+scala/target
+scala/src/main/webapp/js/bundle.js

@@ -1,0 +1,10 @@
+<%@ val body: String %>
+<%@ val title: String %>
+  <html>
+    <head>
+    	<title>${title}</title>
+    </head>
+    <body>
+      ${unescape(body)}
+    </body>
+  </html>

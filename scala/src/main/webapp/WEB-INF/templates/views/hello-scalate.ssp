@@ -1,0 +1,6 @@
+#set (title)
+  Scalatra: a tiny, Sinatra-like web framework for Scala
+#end
+
+<h1>Welcome to Scalatra</h1>
+<p>Hello, Scalate!</p>
