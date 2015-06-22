@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Scala-NodeJS</title>
+	<style>
+		td.red { 
+			background-color: red;
+			color: white;
+		}
+		td.green {
+			background-color: green;
+			color: white;
+		}
+		td.blue{
+			background-color: blue;
+			color: white;
+		}
+		td.odd{
+			background-color: #efefef;
+		}
+	</style>
+</head>
+<body>
+	<div id="app">
+	<%= body %>
+	<div>
+
+	<script id="team-content" type="application/json"><%= teams %></script>
+	<script>
+		function init(){
+			var elem = document.getElementById("app");
+			var props = JSON.parse(document.getElementById("team-content").innerHTML);
+			Router(elem, props);
+		}
+	</script>
+	<script async src="js/bundle.js" onload="init()"></script>
+</body>
+</html>
