@@ -1,0 +1,15 @@
+.red { 
+	background-color: red;
+	color: white;
+}
+.green {
+	background-color: green;
+	color: white;
+}
+.blue{
+	background-color: blue;
+	color: white;
+}
+.odd{
+	background-color: #efefef;
+}

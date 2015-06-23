@@ -2,23 +2,7 @@
 <html>
 <head>
 	<title>Scala-NodeJS</title>
-	<style>
-		td.red { 
-			background-color: red;
-			color: white;
-		}
-		td.green {
-			background-color: green;
-			color: white;
-		}
-		td.blue{
-			background-color: blue;
-			color: white;
-		}
-		td.odd{
-			background-color: #efefef;
-		}
-	</style>
+	<link rel="stylesheet" type="text/css" href="css/highlight.css">
 </head>
 <body>
 	<div id="app">
@@ -26,13 +10,13 @@
 	<div>
 
 	<script id="team-content" type="application/json"><%= teams %></script>
-	<script>
+	<script type="text/javascript">
 		function init(){
 			var elem = document.getElementById("app");
 			var props = JSON.parse(document.getElementById("team-content").innerHTML);
 			Router(elem, props);
 		}
 	</script>
-	<script async src="js/bundle.js" onload="init()"></script>
+	<script async src="js/bundle.js" onload="init()" type="text/javascript"></script>
 </body>
 </html>
