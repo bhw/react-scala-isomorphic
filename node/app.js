@@ -6,22 +6,37 @@ const bodyParser = require('koa-body-parser');
 const React = require('react');
 const Router = require('react-router')
 const AppRoutes = require('./router');
+const co = require('co');
+const uuid = require('uuid');
 
 const app = module.exports = koa();
 
+function wrapRouteRun(router, app){
+	return new Promise((resolve,reject) => {
+		try{
+			router.run( (Handler, state) => {
+				const body = React.renderToString(React.createElement(Handler, null));
+				resolve(body);
+			});
+		} catch(e){
+			reject(e);
+		}
+	});
+}
+
 //views
 app.use(views('./views', {
-  map: {
-    html: 'underscore'
-  }
+	map: {
+		html: 'underscore'
+	}
 }));
 
 // log request execution times
 app.use(function *(next){
-  const start = new Date();
-  yield next;
-  const ms = new Date() - start;
-  console.log('%s %s - %s', this.method, this.url, ms);
+	const start = new Date();
+	yield next;
+	const ms = new Date() - start;
+	console.log('%s %s - %s', this.method, this.url, ms);
 });
 
 //wire up bodyParser to process posted JSON data
@@ -29,31 +44,31 @@ app.use(bodyParser());
 
 app.use(router(app))
 .get('/test', function *(){
-  //provide easy route for testing to make sure node is listening
-  this.body = 'NodeJS running...';
+	//provide easy route for testing to make sure node is listening
+	this.body = 'NodeJS running...';
 })
 .post('/', function *(){
-  //the endpoint called from scala
-  console.log('rendering view', this.request.body.view);
+	//the endpoint called from scala
+	const data = this.request.body.content;
+	const view = this.request.body.view;
+	console.log('rendering view', view);
 
-  const data = this.request.body.content;
-  const view = this.request.body.view;
+	const router = Router.create({
+		location: this.request.url,
+		routes: AppRoutes.getRoutes(data)
+	});
 
-  const router = Router.create({
-    location: this.request.url,
-    routes: AppRoutes.getRoutes(data)
-  });
-
-  const that = this;
-  this.body = yield router.run( (Handler, state) => {
-    console.log('Handler', Handler);
-    console.log('State', state);
-    const body = React.renderToString(Handler);
-    return that.render(view, {
-      body: body,
-      teams: JSON.stringify(data)
-    });
-  });
+	const that = this;
+	yield wrapRouteRun(router, this).then( (body) => {
+		that.body = that.render(view, {
+			body: body,
+			cacheBuster: uuid.v4(),
+			teams: JSON.stringify(data)
+		}); 
+	}).catch( exception => {
+		console.log('router.run exception', exception);
+	});
+	yield this.body;
 });
 
 app.listen(3000);

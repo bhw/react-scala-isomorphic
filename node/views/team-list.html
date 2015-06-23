@@ -13,11 +13,11 @@
 	<script type="text/javascript">
 		function init(){
 			var elem = document.getElementById("app");
-			var props = JSON.parse(document.getElementById("team-content").innerHTML);
+			var data = JSON.parse(document.getElementById("team-content").innerHTML);
 
-			Router.attach(elem, props);
+			Router.attach(elem, data);
 		}
 	</script>
-	<script async src="js/bundle.js" onload="init()" type="text/javascript"></script>
+	<script async src="js/bundle.js?<%= cacheBuster %>" onload="init()" type="text/javascript"></script>
 </body>
 </html>
