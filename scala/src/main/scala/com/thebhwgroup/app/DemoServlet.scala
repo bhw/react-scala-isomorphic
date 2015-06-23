@@ -112,7 +112,7 @@ class DemoServlet(system:ActorSystem) extends DemoStack with JacksonJsonSupport 
 object DispatchAkka {
   def renderPage(json: String)(implicit ctx: ExecutionContext): Future[String] = {
     val myHost = host("localhost", 3000)
-    val myRequest = myHost / "render"
+    val myRequest = myHost
     def myRequestAsJson = myRequest.setContentType("application/json", "UTF-8")
     def post = myRequestAsJson << json
     dispatch.Http(post OK as.String)

@@ -14,7 +14,8 @@
 		function init(){
 			var elem = document.getElementById("app");
 			var props = JSON.parse(document.getElementById("team-content").innerHTML);
-			Router(elem, props);
+
+			Router.attach(elem, props);
 		}
 	</script>
 	<script async src="js/bundle.js" onload="init()" type="text/javascript"></script>

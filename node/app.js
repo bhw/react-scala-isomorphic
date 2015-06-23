@@ -4,7 +4,8 @@ const router = require('koa-router');
 const bodyParser = require('koa-body-parser');
 
 const React = require('react');
-const Table = React.createFactory(require('./server'));
+const Router = require('react-router')
+const AppRoutes = require('./router');
 
 const app = module.exports = koa();
 
@@ -27,18 +28,31 @@ app.use(function *(next){
 app.use(bodyParser());
 
 app.use(router(app))
-.get('/', function *(){
-  //put something on the default route for easy testing to make sure node is listening
+.get('/test', function *(){
+  //provide easy route for testing to make sure node is listening
   this.body = 'NodeJS running...';
 })
-.post('/render', function *(){
+.post('/', function *(){
   //the endpoint called from scala
   console.log('rendering view', this.request.body.view);
-  yield this.render(this.request.body.view, {
-    body: React.renderToString(Table({
-      initialTeams: this.request.body.content
-    })),
-    teams: JSON.stringify(this.request.body.content)
+
+  const data = this.request.body.content;
+  const view = this.request.body.view;
+
+  const router = Router.create({
+    location: this.request.url,
+    routes: AppRoutes.getRoutes(data)
+  });
+
+  const that = this;
+  this.body = yield router.run( (Handler, state) => {
+    console.log('Handler', Handler);
+    console.log('State', state);
+    const body = React.renderToString(Handler);
+    return that.render(view, {
+      body: body,
+      teams: JSON.stringify(data)
+    });
   });
 });
 

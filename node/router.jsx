@@ -2,10 +2,9 @@ const React = require('react/addons');
 const Router= require('react-router');
 const Table = require('./table');
 const Test = require('./test');
+const NotFound = require('./notfound');
 
-const RouteHandler = Router.RouteHandler;
-const Route = Router.Route;
-const DefaultRoute = Router.DefaultRoute;
+const {DefaultRoute, NotFoundRoute, Route, RouteHandler} = require('react-router');
 
 const App = React.createClass({
   render () {
@@ -18,32 +17,36 @@ const App = React.createClass({
   }
 });
 
-const wrapComponent = function(Component, props) {
-  return React.createClass({
-    render: function() {
-      return React.createElement(Component, props);
-    }
-  });
+const approutes = {
+	wrapComponent(Component, props) {
+	  return React.createClass({
+	    render: function() {
+	      return React.createElement(Component, props);
+	    }
+	  });
+	},
+
+	getRoutes(data){
+		const routes = (
+			<Route hander={App}>
+				<DefaultRoute handler={this.wrapComponent(Table, {initialTeams: data})}/>
+				<NotFoundRoute handler={NotFound}/>
+				<Route path="standings" handler={this.wrapComponent(Table, {initialTeams: data})}/>
+				<Route path="node" handler={this.wrapComponent(Table, {initialTeams: data})}/>
+				<Route path="test" handler={Test}/>
+			</Route>
+		);
+		return routes;
+	},
+
+	attach(elem, data){
+		Router.run(this.getRoutes(data), Router.HistoryLocation, function(Handler, state) {
+		  React.render(<Handler/>, elem);
+		});	
+	}
 };
 
-function attach(element, data){
-	console.log('begin...');
-
-	const routes = (
-		<Route hander={App}>
-			<DefaultRoute handler={wrapComponent(Table, {initialTeams: data})}/>
-			<Route path="standings" handler={wrapComponent(Table, {initialTeams: data})}/>
-			<Route path="node" handler={wrapComponent(Table, {initialTeams: data})}/>
-			<Route path="test" handler={Test}/>
-		</Route>
-	);
-
-	Router.run(routes, Router.HashLocation, (Root) => {
-		React.render(<Root/>, element);
-	});
-}
-
-module.exports = attach;
+module.exports = approutes;
 if (typeof window !== "undefined") {
-	window.Router = attach;
+	window.Router = approutes;
 }
