@@ -1,5 +1,5 @@
 const React = require('react/addons');
-import { Link } from 'react-router';
+const { Link } = require('react-router');
 
 const Test = React.createClass({
 	mixins: [React.addons.PureRenderMixin],

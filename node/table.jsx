@@ -2,7 +2,7 @@ const React = require('react/addons');
 const _ = require('lodash');
 const Row = require('./row');
 const Router= require('react-router');
-import { Link } from 'react-router';
+const { Link } = require('react-router');
 
 const Table = React.createClass({
 	mixins: [React.addons.PureRenderMixin],
