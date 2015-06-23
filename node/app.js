@@ -1,17 +1,10 @@
 const koa = require('koa');
-//const staticServer = require('koa-static');
-//const parse = require('co-body');
-//const path = require('path');
 const views = require('koa-views');
 const router = require('koa-router');
-//const underscore = require('underscore');
 const bodyParser = require('koa-body-parser');
 
 const React = require('react');
 const Table = React.createFactory(require('./server'));
-//const Router = React.createFactory(require('./server'));
-
-//var send = require('koa-send');
 
 const app = module.exports = koa();
 
@@ -22,10 +15,7 @@ app.use(views('./views', {
   }
 }));
 
-//serve up the public directory where we have all the assets
-//app.use(staticServer(path.join(__dirname, '_public')));
-
-// logger
+// log request execution times
 app.use(function *(next){
   const start = new Date();
   yield next;
@@ -33,14 +23,17 @@ app.use(function *(next){
   console.log('%s %s - %s', this.method, this.url, ms);
 });
 
+//wire up bodyParser to process posted JSON data
 app.use(bodyParser());
 
 app.use(router(app))
 .get('/', function *(){
-  this.body = 'yes!';
+  //put something on the default route for easy testing to make sure node is listening
+  this.body = 'NodeJS running...';
 })
 .post('/render', function *(){
-  console.log(this.request.body.view);
+  //the endpoint called from scala
+  console.log('rendering view', this.request.body.view);
   yield this.render(this.request.body.view, {
     body: React.renderToString(Table({
       initialTeams: this.request.body.content

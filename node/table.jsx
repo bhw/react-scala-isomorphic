@@ -72,7 +72,6 @@ const Table = React.createClass({
 			<div>
 				<button onClick={this.handleGermanyClick}>Germany</button>
 				<button onClick={this.handleAllClick}>All</button>
-				<Link to={`/test`}>About</Link>
 				
 				<div>{this.calcTotalGames()}</div>
 				<table>

@@ -27,8 +27,10 @@ class DemoServlet(system:ActorSystem) extends DemoStack with JacksonJsonSupport 
   val logger =  LoggerFactory.getLogger(getClass)
 
   //create the postgres connection pool
+  //TODO: change this to your database and user
   ConnectionPool.singleton("jdbc:postgresql://localhost:5432/worldcup", "brett", "")
 
+  //next three get methods can be used to check that Scalatra is working and the database is correctly configured
   //rendering via scalate view engine (ssp)
   get("/hello-scalate"){
     contentType="text/html"
@@ -80,8 +82,10 @@ class DemoServlet(system:ActorSystem) extends DemoStack with JacksonJsonSupport 
     results
   }
 
+  //class for serializing the request we'll send to node
   case class RenderRequest(view: String, content: List[CupResult])
 
+  //our asynchronous, non-blocking, isomorphic, react endpoint
   get("/node"){
     contentType = "text/html"
     new AsyncResult{
@@ -98,11 +102,13 @@ class DemoServlet(system:ActorSystem) extends DemoStack with JacksonJsonSupport 
     }
   }
 
+  //TODO: improvement - configure timeouts?
   //import akka.util.Timeout
   //implicit val defaultTimeout = Timeout(10)
   import _root_.akka.pattern.ask
 }
 
+//create an asynchronous request to node
 object DispatchAkka {
   def renderPage(json: String)(implicit ctx: ExecutionContext): Future[String] = {
     val myHost = host("localhost", 3000)
@@ -113,7 +119,7 @@ object DispatchAkka {
   }
 }
 
-//TODO: code organization
-//TODO: error handling from async post?
-//TODO: 404 route?
-//TODO: better error handling and stack traces?
+//TODO: improvement -  code organization
+//TODO: improvement -  error handling from async post?
+//TODO: improvement -  404 route?
+//TODO: improvement -  better error handling and stack traces?
