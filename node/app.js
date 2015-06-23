@@ -11,9 +11,10 @@ const uuid = require('uuid');
 
 const app = module.exports = koa();
 
-function wrapRouteRun(router, app){
+function wrapRouteRun(router){
 	return new Promise((resolve,reject) => {
 		try{
+			//how does error surface?
 			router.run( (Handler, state) => {
 				const body = React.renderToString(React.createElement(Handler, null));
 				resolve(body);
@@ -58,17 +59,19 @@ app.use(router(app))
 		routes: AppRoutes.getRoutes(data)
 	});
 
-	const that = this;
-	yield wrapRouteRun(router, this).then( (body) => {
-		that.body = that.render(view, {
+	//const that = this;
+	try {
+		const body = yield wrapRouteRun(router);
+		yield this.render(view, {
 			body: body,
 			cacheBuster: uuid.v4(),
 			teams: JSON.stringify(data)
-		}); 
-	}).catch( exception => {
-		console.log('router.run exception', exception);
-	});
-	yield this.body;
+		});
+	} catch (e) {
+		console.log('router.run exception', e);
+	}
+	
+	
 });
 
 app.listen(3000);
