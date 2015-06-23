@@ -1,25 +1,21 @@
 const React = require('react/addons');
 const { Link } = require('react-router');
 
-const Test = React.createClass({
+const About = React.createClass({
 	mixins: [React.addons.PureRenderMixin],
-
-	propTypes: {
-		message: React.PropTypes.string.isRequired
-	},
 
 	render: function() {
 		return (
 			<div>
-				Hello {this.props.message}
+				Standings calculated from the 2014 Men's World Cup.
 				<br/>
-				<Link to={`/node`}>Return to standings</Link>
+				<Link to={`/standings`}>Return to standings</Link>
 			</div>
 		);
 	}
 });
 
-module.exports = Test;
+module.exports = About;
 if (typeof window !== 'undefined') {
-	window.Test = Test;
+	window.About = About;
 }

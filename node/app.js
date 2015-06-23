@@ -7,11 +7,10 @@ const React = require('react');
 const Router = require('react-router')
 const AppRoutes = require('./router');
 const co = require('co');
-const uuid = require('uuid');
 
 const app = module.exports = koa();
 
-function wrapRouteRun(router){
+function AttachReact(router){
 	return new Promise((resolve,reject) => {
 		try{
 			//how does error surface?
@@ -52,26 +51,26 @@ app.use(router(app))
 	//the endpoint called from scala
 	const data = this.request.body.content;
 	const view = this.request.body.view;
+	const url = this.request.body.url;
+
 	console.log('rendering view', view);
+	console.log('url', url);
 
 	const router = Router.create({
-		location: this.request.url,
+		location: url,
 		routes: AppRoutes.getRoutes(data)
 	});
 
 	//const that = this;
 	try {
-		const body = yield wrapRouteRun(router);
+		const body = yield AttachReact(router);
 		yield this.render(view, {
 			body: body,
-			cacheBuster: uuid.v4(),
 			teams: JSON.stringify(data)
 		});
 	} catch (e) {
 		console.log('router.run exception', e);
 	}
-	
-	
 });
 
 app.listen(3000);

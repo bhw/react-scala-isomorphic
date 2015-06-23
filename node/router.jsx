@@ -1,7 +1,7 @@
 const React = require('react/addons');
 const Router= require('react-router');
 const Table = require('./table');
-const Test = require('./test');
+const About = require('./about');
 const NotFound = require('./notfound');
 
 const {DefaultRoute, NotFoundRoute, Route, RouteHandler} = require('react-router');
@@ -33,7 +33,7 @@ const approutes = {
 				<NotFoundRoute handler={NotFound}/>
 				<Route path="standings" handler={this.wrapComponent(Table, {initialTeams: data})}/>
 				<Route path="node" handler={this.wrapComponent(Table, {initialTeams: data})}/>
-				<Route path="test" handler={Test}/>
+				<Route path="about" handler={About}/>
 			</Route>
 		);
 		return routes;

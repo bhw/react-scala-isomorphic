@@ -83,15 +83,31 @@ class DemoServlet(system:ActorSystem) extends DemoStack with JacksonJsonSupport 
   }
 
   //class for serializing the request we'll send to node
-  case class RenderRequest(view: String, content: List[CupResult])
+  case class RenderRequest(view: String, url: String, content: List[CupResult])
 
   //our asynchronous, non-blocking, isomorphic, react endpoint
-  get("/node"){
+  get("/standings"){
     contentType = "text/html"
     new AsyncResult{
       val is =  Future {
         //build our node request
-        val render = RenderRequest("team-list", teams)
+        val render = RenderRequest("team-list", "/standings", teams)
+
+        //build json string of our RenderRequest
+        val json = write(render)
+
+        //dispatch the rendering async to Akka and node
+        DispatchAkka.renderPage(json)
+      }
+    }
+  }
+
+  get("/about"){
+    contentType = "text/html"
+    new AsyncResult{
+      val is =  Future {
+        //build our node request
+        val render = RenderRequest("team-list", "/about", teams)
 
         //build json string of our RenderRequest
         val json = write(render)
